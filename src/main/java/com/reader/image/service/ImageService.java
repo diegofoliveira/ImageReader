@@ -2,10 +2,14 @@ package com.reader.image.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.reader.image.entity.Extracao;
+import com.reader.image.repository.ExtracaoRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import net.sourceforge.tess4j.Tesseract;
@@ -24,6 +28,12 @@ public class ImageService {
     @Value( "${tessdata}" )
     private String tessData;
 
+    private ExtracaoRepository extracaoRepository;
+
+    public ImageService(ExtracaoRepository extracaoRepository){
+        this.extracaoRepository = extracaoRepository;
+    }
+
     public String getStringFromImage(MultipartFile file){
         var retorno = "";
         File image = loadFile(file);
@@ -36,8 +46,8 @@ public class ImageService {
             } catch (TesseractException e) {
                 log.info(e.getMessage());
             }
-        }
-        
+        }        
+        saveExtracao(retorno);
         return retorno;
     }   
 
@@ -58,5 +68,12 @@ public class ImageService {
         }
       
        return null;
+    }
+
+    private void saveExtracao(String texto){
+        Extracao extracao = new Extracao();
+        extracao.setTexto(texto);
+        extracao.setData(new Date());
+        extracaoRepository.save(extracao);
     }
 }

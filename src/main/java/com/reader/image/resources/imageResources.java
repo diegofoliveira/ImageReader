@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-public class imageResources {
+public class ImageResources {
     
     private ImageService imageService;
 
     
-    public imageResources(ImageService imageService) {
+    public ImageResources(ImageService imageService) {
         this.imageService = imageService;
     }
 
